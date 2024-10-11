@@ -11,27 +11,32 @@ export interface Task {
 export interface ResponseTask extends Task {
   id: string;
   projectId?: string;
+  selected: boolean;
   usedTime: HmTime; // unit: minute
 }
 
-const MOCK_SELECTED_TASKS: ResponseTask[] = [
+const MOCK_TASKS: ResponseTask[] = [
   {
     id: '1',
     name: 'task 1',
     estimatedTime: { hours: 1, minutes: 0 },
     usedTime: { hours: 0, minutes: 30 },
+    selected: true,
   },
   {
     id: '2',
     name: 'task 2',
     estimatedTime: { hours: 1, minutes: 0 },
     usedTime: { hours: 0, minutes: 30 },
+    selected: false,
   },
 ];
 
 export const useTaskStore = defineStore('task', () => {
   const tasks = ref<ResponseTask[]>([]);
-  const selectedTasks = ref<ResponseTask[]>(MOCK_SELECTED_TASKS);
+
+  // Mock data
+  tasks.value = MOCK_TASKS;
 
   async function createList(newTasks: Task[], projectId?: string) {
     //TODO: Updating this code when there are a backend
@@ -45,6 +50,7 @@ export const useTaskStore = defineStore('task', () => {
               id,
               usedTime: { hours: 0, minutes: 0 },
               ...(projectId && { projectId }),
+              selected: false,
             };
           })
         );
@@ -64,6 +70,7 @@ export const useTaskStore = defineStore('task', () => {
           id,
           usedTime: { hours: 0, minutes: 0 },
           ...(projectId && { projectId }),
+          selected: false,
         });
       }, 2000);
     });
@@ -72,5 +79,5 @@ export const useTaskStore = defineStore('task', () => {
     return responseTask;
   }
 
-  return { tasks, selectedTasks, createList, create };
+  return { tasks, createList, create };
 });

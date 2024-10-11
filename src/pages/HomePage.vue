@@ -65,7 +65,10 @@
         </div>
 
         <q-list bordered separator>
-          <q-item v-for="task in selectedTasks" :key="task.id">
+          <q-item
+            v-for="task in tasks.filter((task) => task.selected)"
+            :key="task.id"
+          >
             <q-item-section>
               <q-item-label>{{ task.name }}</q-item-label>
             </q-item-section>
@@ -114,30 +117,7 @@
         </q-list>
       </div>
     </div>
-    <q-dialog v-model="showAddPickDialog" persistent>
-      <q-card style="min-width: 350px">
-        <TestPage></TestPage>
-      </q-card>
-    </q-dialog>
-    <!-- Add/Edit Task Dialog -->
-    <!-- <q-dialog v-model="taskDialog.show" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">
-            {{ taskDialog.isEdit ? 'Edit Task' : 'Add Task' }}
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-input dense v-model="taskDialog.task.name" label="Task name" />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Save" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog> -->
+    <AddPickTaskDialog v-model="showAddPickDialog" />
   </q-page>
 </template>
 
@@ -151,7 +131,8 @@ import { TimePresets } from 'src/utils/type';
 import { hmTimeToMinute } from 'src/utils/common';
 
 import { useTaskStore } from 'src/stores/task';
-import TestPage from './TestPage.vue';
+
+import AddPickTaskDialog from 'src/components/modals/AddPickTaskDialog.vue';
 
 const TIMER_COLORS = {
   [Modes.FOCUS]: 'teal-5',
@@ -179,7 +160,7 @@ const totalSessions = ref<number>(4);
 
 const notificationPermission = ref('default');
 
-const { selectedTasks } = storeToRefs(taskStore);
+const { tasks } = storeToRefs(taskStore);
 
 const showAddPickDialog = ref<boolean>(false);
 
