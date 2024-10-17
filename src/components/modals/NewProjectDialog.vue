@@ -150,9 +150,15 @@ const projectInformation = reactive<Project>({
 const tasks = ref<Task[]>([]);
 
 async function createProject() {
-  const projectId = await projectStore.create(projectInformation);
-  await taskStore.createList(tasks.value, projectId);
   showDialog.value = false;
+  try {
+    const projectId = await projectStore.create(projectInformation);
+    await taskStore.createList(
+      tasks.value.map((task) => ({ ...task, projectId }))
+    );
+  } catch (error) {
+    console.error(error);
+  }
 }
 function addTask() {
   tasks.value = tasks.value.concat({
@@ -161,6 +167,7 @@ function addTask() {
       hours: 0,
       minutes: 0,
     },
+    projectId: null,
   });
 }
 function removeTask(index: number) {

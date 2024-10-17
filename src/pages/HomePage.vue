@@ -58,17 +58,21 @@
           <div class="text-h5 col">Tasks</div>
           <q-btn
             color="primary"
+            icon="checklist"
+            label="PICK TASK"
+            @click="showPickTaskDialog = true"
+          />
+          <q-btn
+            color="primary"
             icon="add"
-            label="ADD/PICK TASK"
-            @click="showAddPickDialog = true"
+            label="Add Task"
+            @click="showNewTaskDialog = true"
+            class="q-ml-md"
           />
         </div>
 
         <q-list bordered separator>
-          <q-item
-            v-for="task in tasks.filter((task) => task.selected)"
-            :key="task.id"
-          >
+          <q-item v-for="task in selectedTasks" :key="task.id">
             <q-item-section>
               <q-item-label>{{ task.name }}</q-item-label>
             </q-item-section>
@@ -117,7 +121,8 @@
         </q-list>
       </div>
     </div>
-    <AddPickTaskDialog v-model="showAddPickDialog" />
+    <PickTaskDialog v-model="showPickTaskDialog" />
+    <NewTaskDialog v-model="showNewTaskDialog" />
   </q-page>
 </template>
 
@@ -130,9 +135,10 @@ import { MINUTE_TO_SECOND, MESSAGE_MODES, Modes } from 'src/utils/constant';
 import { TimePresets } from 'src/utils/type';
 import { hmTimeToMinute } from 'src/utils/common';
 
-import { useTaskStore } from 'src/stores/task';
+import { ResponseTask, useTaskStore } from 'src/stores/task';
 
-import AddPickTaskDialog from 'src/components/modals/AddPickTaskDialog.vue';
+import PickTaskDialog from 'src/components/modals/PickTaskDialog.vue';
+import NewTaskDialog from 'src/components/modals/NewTaskDialog.vue';
 
 const TIMER_COLORS = {
   [Modes.FOCUS]: 'teal-5',
@@ -160,9 +166,10 @@ const totalSessions = ref<number>(4);
 
 const notificationPermission = ref('default');
 
-const { tasks } = storeToRefs(taskStore);
+const { selectedTasksInformation } = storeToRefs(taskStore);
 
-const showAddPickDialog = ref<boolean>(false);
+const showPickTaskDialog = ref<boolean>(false);
+const showNewTaskDialog = ref<boolean>(false);
 
 // Audio setup for timer completion sound
 let audio: HTMLAudioElement;
@@ -181,6 +188,14 @@ onMounted(() => {
   }
 });
 
+const selectedTasks = computed(() => {
+  const data: ResponseTask[] = [];
+  selectedTasksInformation.value.forEach(({ projectId }, id) => {
+    const task = taskStore.getTask({ id, projectId });
+    if (task) data.push(task);
+  });
+  return data;
+});
 // Computed properties
 const formattedTime = computed(() => {
   const minutes = Math.floor(leftTime.value / MINUTE_TO_SECOND);
