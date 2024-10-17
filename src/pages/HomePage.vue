@@ -148,6 +148,7 @@ const TIMER_COLORS = {
 
 const $q = useQuasar();
 const taskStore = useTaskStore();
+const { selectedTasksInformation } = storeToRefs(taskStore);
 
 // Time for modes
 const timePresets = reactive<TimePresets>({
@@ -165,8 +166,6 @@ const currentSession = ref<number>(1);
 const totalSessions = ref<number>(4);
 
 const notificationPermission = ref('default');
-
-const { selectedTasksInformation } = storeToRefs(taskStore);
 
 const showPickTaskDialog = ref<boolean>(false);
 const showNewTaskDialog = ref<boolean>(false);
@@ -191,12 +190,11 @@ onMounted(() => {
 const selectedTasks = computed(() => {
   const data: ResponseTask[] = [];
   selectedTasksInformation.value.forEach(({ projectId }, id) => {
-    const task = taskStore.getTask({ id, projectId });
+    const task = taskStore.getTask(id, projectId);
     if (task) data.push(task);
   });
   return data;
 });
-// Computed properties
 const formattedTime = computed(() => {
   const minutes = Math.floor(leftTime.value / MINUTE_TO_SECOND);
   const seconds = leftTime.value % MINUTE_TO_SECOND;
