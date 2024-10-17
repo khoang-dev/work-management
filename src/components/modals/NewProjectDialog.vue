@@ -136,7 +136,7 @@
 import { reactive, ref } from 'vue';
 import { Project, useProjectStore } from 'src/stores/project';
 import { Task, useTaskStore } from 'src/stores/task';
-import { NON_EXISTING_PROJECT_ID } from 'src/utils/constant';
+import { NON_EXISTING_PROJECT } from 'src/utils/constant';
 
 const taskStore = useTaskStore();
 const projectStore = useProjectStore();
@@ -168,7 +168,7 @@ function addTask() {
       hours: 0,
       minutes: 0,
     },
-    projectId: NON_EXISTING_PROJECT_ID,
+    projectId: NON_EXISTING_PROJECT.id,
   });
 }
 function removeTask(index: number) {

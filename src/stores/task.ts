@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { NON_EXISTING_PROJECT_ID } from 'src/utils/constant';
+import { NON_EXISTING_PROJECT } from 'src/utils/constant';
 import { HmTime, StorageProjectId } from 'src/utils/type';
 import { ref } from 'vue';
 
@@ -33,7 +33,7 @@ const MOCK_TASKS: ResponseTask[] = [
     estimatedTime: { hours: 1, minutes: 0 },
     usedTime: { hours: 0, minutes: 30 },
     done: false,
-    projectId: NON_EXISTING_PROJECT_ID,
+    projectId: NON_EXISTING_PROJECT.id,
   },
 ];
 
@@ -58,14 +58,14 @@ export const useTaskStore = defineStore('task', () => {
     };
   }
   function setTask(task: ResponseTask) {
-    const projectId = task.projectId || NON_EXISTING_PROJECT_ID;
+    const projectId = task.projectId || NON_EXISTING_PROJECT.id;
     const dataMap = tasks.value.get(projectId);
     if (dataMap) {
       dataMap.set(task.id, task);
     } else tasks.value.set(projectId, new Map([[task.id, task]]));
   }
   function getTask(taskId: string, projectId: StorageProjectId) {
-    return tasks.value.get(projectId || NON_EXISTING_PROJECT_ID)?.get(taskId);
+    return tasks.value.get(projectId || NON_EXISTING_PROJECT.id)?.get(taskId);
   }
 
   async function createList(newTasks: Task[]) {

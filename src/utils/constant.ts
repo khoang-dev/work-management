@@ -14,4 +14,7 @@ export const MESSAGE_MODES = {
   [Modes.LONG_BREAK]: 'Long break is over. Ready to focus again?',
 };
 
-export const NON_EXISTING_PROJECT_ID: NonExistingProjectId = null;
+export const NON_EXISTING_PROJECT = {
+  label: 'None',
+  id: null as NonExistingProjectId,
+};

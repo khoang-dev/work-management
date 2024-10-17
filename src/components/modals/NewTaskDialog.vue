@@ -59,7 +59,7 @@ import { storeToRefs } from 'pinia';
 
 import { Task, useTaskStore } from 'src/stores/task';
 import { useProjectStore } from 'src/stores/project';
-import { NON_EXISTING_PROJECT_ID } from 'src/utils/constant';
+import { NON_EXISTING_PROJECT } from 'src/utils/constant';
 
 const projectStore = useProjectStore();
 const taskStore = useTaskStore();
@@ -70,12 +70,12 @@ const showModel = defineModel<boolean>({ required: true, default: false });
 const newTask = ref<Task>({
   name: '',
   estimatedTime: { hours: 0, minutes: 0 },
-  projectId: NON_EXISTING_PROJECT_ID,
+  projectId: NON_EXISTING_PROJECT.id,
 });
 
 const projectOptions = computed(() => {
   return [
-    { label: 'None', value: NON_EXISTING_PROJECT_ID },
+    { label: NON_EXISTING_PROJECT.label, value: NON_EXISTING_PROJECT.id },
     ...projects.value.map((project) => ({
       label: project.name,
       value: project.id,

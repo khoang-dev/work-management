@@ -19,7 +19,7 @@
             "
           />
           <TaskSelection
-            v-for="[, task] in tasks.get(NON_EXISTING_PROJECT_ID)"
+            v-for="[, task] in tasks.get(NON_EXISTING_PROJECT.id)"
             :key="task.id"
             :task="task"
             :selected="idTaskSelectionMutations.has(task.id)"
@@ -41,7 +41,7 @@
 import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
-import { NON_EXISTING_PROJECT_ID } from 'src/utils/constant';
+import { NON_EXISTING_PROJECT } from 'src/utils/constant';
 import { StorageProjectId } from 'src/utils/type';
 import { useProjectStore } from 'src/stores/project';
 import { SelectedTasksInformation, useTaskStore } from 'src/stores/task';
