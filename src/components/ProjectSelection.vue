@@ -30,21 +30,26 @@
   </q-expansion-item>
 </template>
 <script lang="ts" setup>
+import { ref } from 'vue';
+
 import { ResponseProject } from 'src/stores/project';
 import { ResponseTask } from 'src/stores/task';
-import { ref } from 'vue';
+
 import TaskSelection from './TaskSelection.vue';
 
+export type ProjectSelectionTask = ResponseTask & { selected: boolean };
 export type ProjectSelection = ResponseProject & {
-  tasks: (ResponseTask & { selected: boolean })[];
+  tasks: ProjectSelectionTask[];
 };
 type Prop = {
   project: ProjectSelection;
 };
+
 const $emit = defineEmits<{ change: [id: string, selected: boolean] }>();
+
 const props = defineProps<Prop>();
 
-// handle v-model cho selected với datatype kiểu {id: string, selected: boolean}[]
+// TODO: Consider using v-model instead
 const selecteds = ref<boolean[]>(
   props.project.tasks.map(({ selected }) => selected)
 );
