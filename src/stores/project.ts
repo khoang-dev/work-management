@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { ProjectId } from 'src/utils/type';
 import { ref } from 'vue';
 
 // TODO: sẽ thiết kế database 1 task chỉ thuộc về 1 project bằng cách, 1 task sê chỉ có 1 project ID. Nhưng trả về frontend thì task sẽ không có project ID và project sẽ có 1 list task id của project đó.
@@ -8,7 +9,7 @@ export interface Project {
   endDate: string;
 }
 export interface ResponseProject extends Project {
-  id: string;
+  id: ProjectId;
 }
 const MOCK_PROJECTS: ResponseProject[] = [
   {

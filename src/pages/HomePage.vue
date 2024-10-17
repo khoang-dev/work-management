@@ -189,8 +189,8 @@ onMounted(() => {
 
 const selectedTasks = computed(() => {
   const data: ResponseTask[] = [];
-  selectedTasksInformation.value.forEach(({ projectId }, id) => {
-    const task = taskStore.getTask(id, projectId);
+  selectedTasksInformation.value.forEach((projectId, taskId) => {
+    const task = taskStore.getTask(taskId, projectId);
     if (task) data.push(task);
   });
   return data;

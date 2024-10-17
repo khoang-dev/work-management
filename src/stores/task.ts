@@ -1,17 +1,18 @@
 import { defineStore } from 'pinia';
 import { NON_EXISTING_PROJECT_ID } from 'src/utils/constant';
-import { HmTime, ProjectId } from 'src/utils/type';
+import { HmTime, StorageProjectId } from 'src/utils/type';
 import { ref } from 'vue';
 
 //TODO: Update name and logic extend
+type TaskId = string;
 export interface Task {
   name: string;
   estimatedTime: HmTime;
-  projectId: ProjectId;
+  projectId: StorageProjectId;
 }
-export type SelectedTasksInformation = Map<string, { projectId: ProjectId }>;
+export type SelectedTasksInformation = Map<TaskId, StorageProjectId>;
 export interface ResponseTask extends Task {
-  id: string;
+  id: TaskId;
   usedTime: HmTime;
   done: boolean;
 }
@@ -32,13 +33,15 @@ const MOCK_TASKS: ResponseTask[] = [
     estimatedTime: { hours: 1, minutes: 0 },
     usedTime: { hours: 0, minutes: 30 },
     done: false,
-    projectId: null,
+    projectId: NON_EXISTING_PROJECT_ID,
   },
 ];
 
 export const useTaskStore = defineStore('task', () => {
-  const tasks = ref<Map<string, Map<string, ResponseTask>>>(new Map()); // using projectId for key // using task id for key // reduplicate task id and Project Id
-  const selectedTasksInformation = ref<SelectedTasksInformation>(new Map()); // using id of Task for key
+  const tasks = ref<Map<StorageProjectId, Map<TaskId, ResponseTask>>>(
+    new Map()
+  );
+  const selectedTasksInformation = ref<SelectedTasksInformation>(new Map());
 
   // MOCK DATA
   function init() {
@@ -61,7 +64,7 @@ export const useTaskStore = defineStore('task', () => {
       dataMap.set(task.id, task);
     } else tasks.value.set(projectId, new Map([[task.id, task]]));
   }
-  function getTask(taskId: string, projectId: ProjectId) {
+  function getTask(taskId: string, projectId: StorageProjectId) {
     return tasks.value.get(projectId || NON_EXISTING_PROJECT_ID)?.get(taskId);
   }
 
@@ -76,7 +79,6 @@ export const useTaskStore = defineStore('task', () => {
               id: genId().get(),
               usedTime: USED_TIME_DEFALT_VALUE,
               done: false,
-              projectId: null,
             };
           })
         );
@@ -95,7 +97,6 @@ export const useTaskStore = defineStore('task', () => {
           id: genId().get(),
           usedTime: USED_TIME_DEFALT_VALUE,
           done: false,
-          projectId: null,
         });
       }, 2000);
     });

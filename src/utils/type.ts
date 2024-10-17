@@ -9,4 +9,6 @@ export interface HmTime {
   minutes: number;
 }
 
-export type ProjectId = string | null;
+export type NonExistingProjectId = null;
+export type ProjectId = string;
+export type StorageProjectId = ProjectId | NonExistingProjectId;

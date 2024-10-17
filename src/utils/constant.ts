@@ -1,3 +1,5 @@
+import { NonExistingProjectId } from './type';
+
 export const MINUTE_TO_SECOND = 60;
 export const HOUR_TO_MINUTE = 60;
 
@@ -12,4 +14,4 @@ export const MESSAGE_MODES = {
   [Modes.LONG_BREAK]: 'Long break is over. Ready to focus again?',
 };
 
-export const NON_EXISTING_PROJECT_ID = 'NON_EXISTING_PROJECT_ID';
+export const NON_EXISTING_PROJECT_ID: NonExistingProjectId = null;

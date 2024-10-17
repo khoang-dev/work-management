@@ -42,7 +42,7 @@ import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { NON_EXISTING_PROJECT_ID } from 'src/utils/constant';
-import { ProjectId } from 'src/utils/type';
+import { StorageProjectId } from 'src/utils/type';
 import { useProjectStore } from 'src/stores/project';
 import { SelectedTasksInformation, useTaskStore } from 'src/stores/task';
 
@@ -80,15 +80,12 @@ const projectOptions = computed(() => {
 
 function changeSelection(
   taskId: string,
-  projectId: ProjectId,
+  projectId: StorageProjectId,
   selected: boolean
 ) {
   if (!selected) {
     idTaskSelectionMutations.value.delete(taskId);
-  } else
-    idTaskSelectionMutations.value.set(taskId, {
-      projectId,
-    });
+  } else idTaskSelectionMutations.value.set(taskId, projectId);
 }
 
 function confirm() {
