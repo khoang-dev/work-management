@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia';
+import { NON_EXISTING_PROJECT_ID } from 'src/utils/constant';
 import { HmTime } from 'src/utils/type';
 import { ref } from 'vue';
 
 //TODO: Update name and logic extend
-
-export const NON_EXISTING_PROJECT_ID = 'NON_EXISTING_PROJECT_ID';
 export interface Task {
   name: string;
   estimatedTime: HmTime; // unit: minute

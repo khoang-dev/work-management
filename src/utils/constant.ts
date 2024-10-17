@@ -11,3 +11,5 @@ export const MESSAGE_MODES = {
   [Modes.SHORT_BREAK]: 'Short break is over. Back to work!',
   [Modes.LONG_BREAK]: 'Long break is over. Ready to focus again?',
 };
+
+export const NON_EXISTING_PROJECT_ID = 'NON_EXISTING_PROJECT_ID';
