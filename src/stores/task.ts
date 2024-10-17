@@ -17,7 +17,7 @@ export interface ResponseTask extends Task {
   done: boolean;
 }
 
-export const USED_TIME_DEFALT_VALUE: HmTime = { hours: 0, minutes: 0 };
+const USED_TIME_DEFALT_VALUE: HmTime = { hours: 0, minutes: 0 };
 const MOCK_TASKS: ResponseTask[] = [
   {
     id: '1',
