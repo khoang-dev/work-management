@@ -11,3 +11,7 @@ export function minuteToHmTime(minutes: number): HmTime {
     minutes: minutes % HOUR_TO_MINUTE,
   };
 }
+
+export function convertHmTimeToText(hmTime: HmTime): string {
+  return `${hmTime.hours}h ${hmTime.minutes}m`;
+}

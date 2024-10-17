@@ -1,3 +1,4 @@
+//TODO: Refactor this component
 <template>
   <q-expansion-item header-class="text-primary">
     <template #header>
@@ -13,8 +14,17 @@
       <q-item-section>
         <q-item-label>{{ project.name }}</q-item-label>
         <q-item-label caption>
-          <!-- Total Estimate: {{ calculateProjectTime(item) }} | Total
-                    used: {{ calculateProjectTime(item) }} -->
+          <!-- Refactor this loop -->
+          Total Estimate:
+          {{
+            calculateProjectTime(
+              project.tasks.map(({ estimatedTime }) => estimatedTime)
+            )
+          }}
+          | Total used:
+          {{
+            calculateProjectTime(project.tasks.map(({ usedTime }) => usedTime))
+          }}
         </q-item-label>
       </q-item-section>
     </template>
@@ -36,6 +46,8 @@ import { ResponseProject } from 'src/stores/project';
 import { ResponseTask } from 'src/stores/task';
 
 import TaskSelection from './TaskSelection.vue';
+import { HmTime } from 'src/utils/type';
+import { convertHmTimeToText } from 'src/utils/common';
 
 export type ProjectSelectionTask = ResponseTask & { selected: boolean };
 export type ProjectSelection = ResponseProject & {
@@ -64,6 +76,17 @@ function changeSelectedProject() {
 function changeSeletedTask(id: string, idx: number, value: boolean) {
   selecteds.value[idx] = value;
   $emit('change', id, value);
+}
+function calculateProjectTime(hmTimes: HmTime[]): string {
+  return convertHmTimeToText(
+    hmTimes.reduce(
+      (accumulator, currentValue) => ({
+        hours: accumulator.hours + currentValue.hours,
+        minutes: accumulator.minutes + currentValue.minutes,
+      }),
+      { hours: 0, minutes: 0 }
+    )
+  );
 }
 </script>
 <style lang=""></style>
