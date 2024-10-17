@@ -54,16 +54,17 @@
   </q-dialog>
 </template>
 <script lang="ts" setup>
-import { Task, useTaskStore } from 'src/stores/task';
 import { computed, ref } from 'vue';
-import { useProjectStore } from 'src/stores/project';
 import { storeToRefs } from 'pinia';
 
-const showModel = defineModel<boolean>({ required: true, default: false });
+import { Task, useTaskStore } from 'src/stores/task';
+import { useProjectStore } from 'src/stores/project';
 
 const projectStore = useProjectStore();
 const taskStore = useTaskStore();
 const { projects } = storeToRefs(projectStore);
+
+const showModel = defineModel<boolean>({ required: true, default: false });
 
 const newTask = ref<Task>({
   name: '',
