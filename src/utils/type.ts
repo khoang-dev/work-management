@@ -8,3 +8,5 @@ export interface HmTime {
   hours: number;
   minutes: number;
 }
+
+export type ProjectId = string | null;

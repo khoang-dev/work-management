@@ -1,25 +1,22 @@
 import { defineStore } from 'pinia';
 import { NON_EXISTING_PROJECT_ID } from 'src/utils/constant';
-import { HmTime } from 'src/utils/type';
+import { HmTime, ProjectId } from 'src/utils/type';
 import { ref } from 'vue';
 
 //TODO: Update name and logic extend
 export interface Task {
   name: string;
-  estimatedTime: HmTime; // unit: minute
-  projectId: string | null;
+  estimatedTime: HmTime;
+  projectId: ProjectId;
 }
+export type SelectedTasksInformation = Map<string, { projectId: ProjectId }>;
 export interface ResponseTask extends Task {
   id: string;
-  usedTime: HmTime; // unit: minute
+  usedTime: HmTime;
   done: boolean;
 }
 
-export interface SelectedTaskInformation {
-  projectId: string | null;
-  id: string;
-}
-
+export const USED_TIME_DEFALT_VALUE: HmTime = { hours: 0, minutes: 0 };
 const MOCK_TASKS: ResponseTask[] = [
   {
     id: '1',
@@ -40,14 +37,16 @@ const MOCK_TASKS: ResponseTask[] = [
 ];
 
 export const useTaskStore = defineStore('task', () => {
-  // Xác định Map hay Array cho tasks và selectedTaskIds, 2 cái này nên dùng riêng hay chung
-  // Hiện tại có những chức năng sau,show project task, selected tasks
-  // const tasks = ref<ResponseTask[]>([]);
-  const tasks = ref<Map<string, Map<string, ResponseTask>>>(new Map()); // using projectId for key
-  // const selectedTasksInformation = ref<SelectedTaskInformation[]>([]);
-  const selectedTasksInformation = ref<
-    Map<string, { projectId: string | null }>
-  >(new Map()); // using id of Task for key
+  const tasks = ref<Map<string, Map<string, ResponseTask>>>(new Map()); // using projectId for key // using task id for key // reduplicate task id and Project Id
+  const selectedTasksInformation = ref<SelectedTasksInformation>(new Map()); // using id of Task for key
+
+  // MOCK DATA
+  function init() {
+    genId().set(MOCK_TASKS.length);
+    MOCK_TASKS.forEach((task) => setTask(task));
+  }
+  init();
+
   function genId() {
     let currentId: number = 0;
     return {
@@ -55,35 +54,17 @@ export const useTaskStore = defineStore('task', () => {
       get: () => String(currentId++),
     };
   }
-  // Chức năng để xác định selected hay không
-
-  // const selectedTaskIds = ref<Map<string, boolean>>(new Map<string, boolean>());
-
-  // Xem xét lại những table trên database hiện tại
-
-  function init() {
-    genId().set(MOCK_TASKS.length);
-    MOCK_TASKS.forEach((task) => setTask(task));
-  }
-  init();
-
   function setTask(task: ResponseTask) {
     const projectId = task.projectId || NON_EXISTING_PROJECT_ID;
     const dataMap = tasks.value.get(projectId);
     if (dataMap) {
-      dataMap.set(task.id, task); // Dư field id and ProjectId
-    } else
-      tasks.value.set(
-        projectId,
-        new Map<string, ResponseTask>([[task.id, task]])
-      );
+      dataMap.set(task.id, task);
+    } else tasks.value.set(projectId, new Map([[task.id, task]]));
+  }
+  function getTask(taskId: string, projectId: ProjectId) {
+    return tasks.value.get(projectId || NON_EXISTING_PROJECT_ID)?.get(taskId);
   }
 
-  function getTask(selectedTaskInformation: SelectedTaskInformation) {
-    return tasks.value
-      .get(selectedTaskInformation.projectId || NON_EXISTING_PROJECT_ID)
-      ?.get(selectedTaskInformation.id);
-  }
   async function createList(newTasks: Task[]) {
     //TODO: Updating this code when there are a backend
     const responseTasks: ResponseTask[] = await new Promise((resolve) => {
@@ -93,7 +74,7 @@ export const useTaskStore = defineStore('task', () => {
             return {
               ...task,
               id: genId().get(),
-              usedTime: { hours: 0, minutes: 0 },
+              usedTime: USED_TIME_DEFALT_VALUE,
               done: false,
               projectId: null,
             };
@@ -112,7 +93,7 @@ export const useTaskStore = defineStore('task', () => {
         resolve({
           ...newTask,
           id: genId().get(),
-          usedTime: { hours: 0, minutes: 0 },
+          usedTime: USED_TIME_DEFALT_VALUE,
           done: false,
           projectId: null,
         });
@@ -122,14 +103,6 @@ export const useTaskStore = defineStore('task', () => {
     setTask(responseTask);
     return responseTask;
   }
-
-  // function getTasksByProjectId(projectId: string) {
-  //   return tasks.value.filter((task) => task.projectId === projectId);
-  // }
-
-  // function getTasksNotInProject() {
-  //   return tasks.value.filter((task) => !task.projectId);
-  // }
 
   // function changeSelection(idTaskSelectionMutations: string[]) {
   //   selectedTaskIds.value = idTaskSelectionMutations;
