@@ -57,11 +57,10 @@ export const useTaskStore = defineStore('task', () => {
     selectedTasksInformation.value = idTaskSelectionMutations;
   }
   function setTask(task: ResponseTask) {
-    const projectId = task.projectId || NON_EXISTING_PROJECT.id;
-    const dataMap = tasks.value.get(projectId);
+    const dataMap = tasks.value.get(task.projectId);
     if (dataMap) {
       dataMap.set(task.id, task);
-    } else tasks.value.set(projectId, new Map([[task.id, task]]));
+    } else tasks.value.set(task.projectId, new Map([[task.id, task]]));
   }
   function getTask(taskId: TaskId, projectId: StorageProjectId) {
     return tasks.value.get(projectId || NON_EXISTING_PROJECT.id)?.get(taskId);
