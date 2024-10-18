@@ -24,11 +24,17 @@
     <q-item-section side>
       <q-btn flat round icon="more_vert">
         <q-menu>
-          <q-list style="min-width: 100px">
-            <q-item clickable>
+          <q-list separator style="min-width: 100px">
+            <q-item
+              clickable
+              @click="$emit('edit', props.task.id, props.task.projectId)"
+            >
               <q-item-section>Edit</q-item-section>
             </q-item>
-            <q-item clickable>
+            <q-item
+              clickable
+              @click="$emit('delete', props.task.id, props.task.projectId)"
+            >
               <q-item-section>Delete</q-item-section>
             </q-item>
           </q-list>
@@ -40,11 +46,17 @@
 <script lang="ts" setup>
 import { ResponseTask } from 'src/stores/task';
 import { convertHmTimeToText, hmTimeToMinute } from 'src/utils/common';
+import { StorageProjectId, TaskId } from 'src/utils/type';
 import { computed, toRefs } from 'vue';
 
 type Props = {
   task: ResponseTask;
 };
+
+const $emit = defineEmits<{
+  edit: [taskId: TaskId, projectId: StorageProjectId];
+  delete: [taskId: TaskId, projectId: StorageProjectId];
+}>();
 
 const props = defineProps<Props>();
 const { task } = toRefs(props);
