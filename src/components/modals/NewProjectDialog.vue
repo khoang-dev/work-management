@@ -1,134 +1,148 @@
 <template>
   <q-dialog v-model="showDialog" persistent>
     <q-card style="min-width: 500px">
-      <q-card-section class="row items-center q-pb-none">
-        <div class="text-h6">New Project</div>
-        <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
+      <q-form @submit="create">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">New Project</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
 
-      <q-card-section class="q-pt-sm">
-        <q-input
-          v-model="projectInformation.name"
-          label="What are you working on?"
-          filled
-          class="q-mb-md"
-        />
+        <q-card-section class="q-pt-sm">
+          <q-input
+            v-model="projectInformation.name"
+            label="What are you working on?"
+            filled
+            class="q-mb-md"
+            :rules="[requiredValidation]"
+          />
 
-        <div class="row q-col-gutter-md q-mb-md">
-          <div class="col-6">
-            <q-input
-              v-model="projectInformation.startDate"
-              label="Start date"
-              filled
-              mask="date"
-              :rules="['date']"
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date v-model="projectInformation.startDate">
-                      <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Close"
-                          color="primary"
-                          flat
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
-          <div class="col-6">
-            <q-input
-              v-model="projectInformation.endDate"
-              label="End date"
-              filled
-              mask="date"
-              :rules="['date']"
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date v-model="projectInformation.endDate">
-                      <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Close"
-                          color="primary"
-                          flat
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
-        </div>
-
-        <div class="text-h6 q-mb-sm">Tasks</div>
-        <q-list bordered separator v-if="tasks.length">
-          <q-item v-for="(task, index) in tasks" :key="index">
-            <q-item-section>
-              <q-input v-model="task.name" label="Task name" dense filled />
-            </q-item-section>
-            <q-item-section class="col-3">
+          <div class="row q-col-gutter-md q-mb-md">
+            <div class="col-6">
               <q-input
-                v-model.number="task.estimatedTime.hours"
-                label="Hours"
-                type="number"
-                dense
+                v-model="projectInformation.startDate"
+                label="Start date"
                 filled
-              />
-            </q-item-section>
-            <q-item-section class="col-3">
+                mask="date"
+                :rules="['date', requiredValidation]"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="projectInformation.startDate">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+            <div class="col-6">
               <q-input
-                v-model.number="task.estimatedTime.minutes"
-                label="Minutes"
-                type="number"
-                dense
+                v-model="projectInformation.endDate"
+                label="End date"
                 filled
-              />
-            </q-item-section>
-            <q-item-section side>
-              <q-btn
-                round
-                flat
-                dense
-                icon="delete"
-                color="negative"
-                @click="removeTask(index)"
-              />
-            </q-item-section>
-          </q-item>
-        </q-list>
+                mask="date"
+                :rules="['date', requiredValidation]"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="projectInformation.endDate">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+          </div>
 
-        <q-btn
-          class="q-mt-sm"
-          icon="add"
-          label="ADD TASK"
-          color="primary"
-          flat
-          @click="addTask"
-        />
-      </q-card-section>
+          <div class="text-h6 q-mb-sm">Tasks</div>
+          <q-list bordered separator v-if="tasks.length">
+            <q-item v-for="(task, index) in tasks" :key="index">
+              <q-item-section>
+                <q-input
+                  v-model="task.name"
+                  label="Task name"
+                  dense
+                  filled
+                  :rules="[requiredValidation]"
+                />
+              </q-item-section>
+              <q-item-section class="col-3">
+                <q-input
+                  v-model.number="task.estimatedTime.hours"
+                  label="Hours"
+                  type="number"
+                  filled
+                  min="0"
+                  dense
+                  :rules="[requiredValidation]"
+                />
+              </q-item-section>
+              <q-item-section class="col-3">
+                <q-input
+                  v-model.number="task.estimatedTime.minutes"
+                  label="Minutes"
+                  type="number"
+                  filled
+                  min="0"
+                  max="59"
+                  dense
+                  :rules="[requiredValidation]"
+                />
+              </q-item-section>
+              <q-item-section side>
+                <q-btn
+                  round
+                  flat
+                  dense
+                  icon="delete"
+                  color="negative"
+                  @click="removeTask(index)"
+                />
+              </q-item-section>
+            </q-item>
+          </q-list>
 
-      <q-card-actions align="right" class="bg-grey-1">
-        <q-btn flat label="Cancel" color="grey" v-close-popup />
-        <q-btn flat label="Create" color="primary" @click="createProject" />
-      </q-card-actions>
+          <q-btn
+            class="q-mt-sm"
+            icon="add"
+            label="ADD TASK"
+            color="primary"
+            flat
+            @click="addTask"
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-grey-1">
+          <q-btn flat label="Cancel" color="grey" v-close-popup />
+          <q-btn flat label="Create" color="primary" type="submit" />
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
@@ -137,6 +151,7 @@ import { reactive, ref } from 'vue';
 import { Project, useProjectStore } from 'src/stores/project';
 import { Task, useTaskStore } from 'src/stores/task';
 import { NON_EXISTING_PROJECT } from 'src/utils/constant';
+import { requiredValidation } from 'src/utils/common';
 
 const taskStore = useTaskStore();
 const projectStore = useProjectStore();
@@ -150,7 +165,7 @@ const projectInformation = reactive<Project>({
 });
 const tasks = ref<Task[]>([]);
 
-async function createProject() {
+async function create() {
   showDialog.value = false;
   try {
     const projectId = await projectStore.create(projectInformation);
