@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia';
 import { genId } from 'src/utils/common';
 import { NON_EXISTING_PROJECT } from 'src/utils/constant';
-import { HmTime, StorageProjectId } from 'src/utils/type';
+import { HmTime, StorageProjectId, TaskId } from 'src/utils/type';
 import { ref } from 'vue';
 
 //TODO: Update name and logic extend
-type TaskId = string;
 export interface Task {
   name: string;
   estimatedTime: HmTime;
@@ -52,6 +51,11 @@ export const useTaskStore = defineStore('task', () => {
   }
   init();
 
+  function changeSelectionTask(
+    idTaskSelectionMutations: SelectedTasksInformation
+  ) {
+    selectedTasksInformation.value = idTaskSelectionMutations;
+  }
   function setTask(task: ResponseTask) {
     const projectId = task.projectId || NON_EXISTING_PROJECT.id;
     const dataMap = tasks.value.get(projectId);
@@ -59,10 +63,26 @@ export const useTaskStore = defineStore('task', () => {
       dataMap.set(task.id, task);
     } else tasks.value.set(projectId, new Map([[task.id, task]]));
   }
-  function getTask(taskId: string, projectId: StorageProjectId) {
+  function getTask(taskId: TaskId, projectId: StorageProjectId) {
     return tasks.value.get(projectId || NON_EXISTING_PROJECT.id)?.get(taskId);
   }
+  function removeTask(taskId: TaskId, projectId: StorageProjectId) {
+    tasks.value.get(projectId)?.delete(taskId);
+  }
 
+  async function changeSelection(
+    idTaskSelectionMutations: SelectedTasksInformation
+  ) {
+    const responseTasks: SelectedTasksInformation = await new Promise(
+      (resolve) => {
+        setTimeout(() => {
+          resolve(new Map(idTaskSelectionMutations));
+        }, 2000);
+      }
+    );
+    changeSelectionTask(responseTasks);
+    return;
+  }
   async function createList(newTasks: Task[]) {
     //TODO: Updating this code when there are a backend
     const responseTasks: ResponseTask[] = await new Promise((resolve) => {
@@ -81,7 +101,7 @@ export const useTaskStore = defineStore('task', () => {
     });
 
     responseTasks.forEach((task) => setTask(task));
-    return responseTasks;
+    return;
   }
   async function create(newTask: Task) {
     //TODO: Updating this code when there are a backend
@@ -97,18 +117,39 @@ export const useTaskStore = defineStore('task', () => {
     });
 
     setTask(responseTask);
-    return responseTask;
+    return;
+  }
+  async function update(task: ResponseTask) {
+    //TODO: Updating this code when there are a backend
+    const responseTask: ResponseTask = await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          ...task,
+        });
+      }, 2000);
+    });
+    setTask(responseTask);
+    return;
+  }
+  async function remove(taskId: TaskId, projectId: StorageProjectId) {
+    //TODO: Updating this code when there are a backend
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 2000);
+    });
+    removeTask(taskId, projectId);
+    return;
   }
 
-  function changeSelection(idTaskSelectionMutations: SelectedTasksInformation) {
-    selectedTasksInformation.value = new Map(idTaskSelectionMutations);
-  }
   return {
     tasks,
     selectedTasksInformation,
-    createList,
-    create,
     getTask,
     changeSelection,
+    createList,
+    create,
+    update,
+    remove,
   };
 });

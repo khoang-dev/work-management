@@ -30,6 +30,19 @@ export const useProjectStore = defineStore('project', () => {
   }
   init();
 
+  function addProject(project: ResponseProject) {
+    projects.value = projects.value.concat(project);
+  }
+  function updateProject(project: ResponseProject) {
+    const index = projects.value.findIndex((p) => p.id === project.id);
+    if (index !== -1) {
+      projects.value.splice(index, 1, project);
+    }
+  }
+  function removeProject(projectId: ProjectId) {
+    projects.value = projects.value.filter((p) => p.id !== projectId);
+  }
+
   async function create(value: Project) {
     //TODO: Updating this code when there are a backend
     const responseProject: ResponseProject = await new Promise((resolve) => {
@@ -40,9 +53,30 @@ export const useProjectStore = defineStore('project', () => {
         });
       }, 2000);
     });
-    projects.value = projects.value.concat(responseProject);
+    addProject(responseProject);
     return responseProject.id;
   }
+  async function update(project: ResponseProject) {
+    //TODO: Updating this code when there are a backend
+    const responseProject: ResponseProject = await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          ...project,
+        });
+      }, 2000);
+    });
+    updateProject(responseProject);
+    return;
+  }
+  async function remove(projectId: ProjectId) {
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 2000);
+    });
+    removeProject(projectId);
+    return;
+  }
 
-  return { projects, create };
+  return { projects, create, update, remove };
 });

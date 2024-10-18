@@ -12,3 +12,4 @@ export interface HmTime {
 export type NonExistingProjectId = null;
 export type ProjectId = string;
 export type StorageProjectId = ProjectId | NonExistingProjectId;
+export type TaskId = string;
