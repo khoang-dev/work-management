@@ -50,11 +50,11 @@ import { HmTime } from 'src/utils/type';
 import { convertHmTimeToText } from 'src/utils/common';
 
 export type ProjectSelectionTask = ResponseTask & { selected: boolean };
-export type ProjectSelection = ResponseProject & {
+export type ProjectSelectionType = ResponseProject & {
   tasks: ProjectSelectionTask[];
 };
 type Prop = {
-  project: ProjectSelection;
+  project: ProjectSelectionType;
 };
 
 const $emit = defineEmits<{ change: [id: string, selected: boolean] }>();

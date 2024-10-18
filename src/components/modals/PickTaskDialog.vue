@@ -48,6 +48,7 @@ import { SelectedTasksInformation, useTaskStore } from 'src/stores/task';
 
 import TaskSelection from '../TaskSelection.vue';
 import ProjectSelection, {
+  ProjectSelectionType,
   ProjectSelectionTask,
 } from '../ProjectSelection.vue';
 
@@ -62,8 +63,10 @@ const idTaskSelectionMutations = ref<SelectedTasksInformation>(
   taskStore.selectedTasksInformation
 );
 
+//TODO:  refactor  logic
 const projectOptions = computed(() => {
-  return projects.value.map((project) => {
+  const options: ProjectSelectionType[] = [];
+  projects.value.forEach((project) => {
     let projectRelatedTasks: ProjectSelectionTask[] = [];
     (tasks.value.get(project.id) || []).forEach((task) =>
       projectRelatedTasks.push({
@@ -71,11 +74,13 @@ const projectOptions = computed(() => {
         selected: idTaskSelectionMutations.value.has(task.id),
       })
     );
-    return {
-      ...project,
-      tasks: projectRelatedTasks,
-    };
+    if (projectRelatedTasks.length)
+      options.push({
+        ...project,
+        tasks: projectRelatedTasks,
+      });
   });
+  return options;
 });
 
 function changeSelection(
