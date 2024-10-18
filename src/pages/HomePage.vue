@@ -72,52 +72,12 @@
         </div>
 
         <q-list bordered separator>
-          <q-item v-for="task in selectedTasks" :key="task.id">
-            <q-item-section>
-              <q-item-label>{{ task.name }}</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-linear-progress
-                rounded
-                size="20px"
-                :value="
-                  hmTimeToMinute(task.usedTime) /
-                  hmTimeToMinute(task.estimatedTime)
-                "
-                color="purple-5"
-                class="q-mr-sm"
-                style="width: 100px"
-              >
-                <div class="absolute-full flex flex-center">
-                  <q-badge
-                    color="transparent"
-                    text-color="black"
-                    :label="
-                      (
-                        (hmTimeToMinute(task.usedTime) /
-                          hmTimeToMinute(task.estimatedTime)) *
-                        100
-                      ).toFixed(1) + '%'
-                    "
-                  />
-                </div>
-              </q-linear-progress>
-            </q-item-section>
-            <q-item-section side>
-              <q-btn flat round icon="more_vert">
-                <q-menu>
-                  <q-list style="min-width: 100px">
-                    <q-item clickable>
-                      <q-item-section>Edit</q-item-section>
-                    </q-item>
-                    <q-item clickable>
-                      <q-item-section>Delete</q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-menu>
-              </q-btn>
-            </q-item-section>
-          </q-item>
+          <SelectedTask
+            v-for="task in selectedTasks"
+            :key="task.id"
+            :task="task"
+          >
+          </SelectedTask>
         </q-list>
       </div>
     </div>
@@ -133,12 +93,12 @@ import { storeToRefs } from 'pinia';
 
 import { MINUTE_TO_SECOND, MESSAGE_MODES, Modes } from 'src/utils/constant';
 import { TimePresets } from 'src/utils/type';
-import { hmTimeToMinute } from 'src/utils/common';
 
 import { ResponseTask, useTaskStore } from 'src/stores/task';
 
 import PickTaskDialog from 'src/components/modals/PickTaskDialog.vue';
 import NewTaskDialog from 'src/components/modals/NewTaskDialog.vue';
+import SelectedTask from 'src/components/SelectedTask.vue';
 
 const TIMER_COLORS = {
   [Modes.FOCUS]: 'teal-5',
