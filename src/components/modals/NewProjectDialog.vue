@@ -33,7 +33,14 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="projectInformation.startDate">
+                      <q-date
+                        v-model="projectInformation.startDate"
+                        :options="
+                          (date) =>
+                            !projectInformation.endDate ||
+                            date <= projectInformation.endDate
+                        "
+                      >
                         <div class="row items-center justify-end">
                           <q-btn
                             v-close-popup
@@ -63,7 +70,14 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="projectInformation.endDate">
+                      <q-date
+                        v-model="projectInformation.endDate"
+                        :options="
+                          (date) =>
+                            !projectInformation.startDate ||
+                            date >= projectInformation.startDate
+                        "
+                      >
                         <div class="row items-center justify-end">
                           <q-btn
                             v-close-popup
