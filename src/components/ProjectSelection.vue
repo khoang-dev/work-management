@@ -40,7 +40,7 @@
   </q-expansion-item>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 import { ResponseProject } from 'src/stores/project';
 import { ResponseTask } from 'src/stores/task';
@@ -61,10 +61,15 @@ const $emit = defineEmits<{ change: [id: string, selected: boolean] }>();
 
 const props = defineProps<Prop>();
 
-// TODO: Consider using v-model instead
+// TODO: Consider using v-model instead and remove duplicate props.project.tasks.map(({ selected }) => selected)
+//
 const selecteds = ref<boolean[]>(
   props.project.tasks.map(({ selected }) => selected)
 );
+
+watch(props, () => {
+  selecteds.value = props.project.tasks.map(({ selected }) => selected);
+});
 
 function changeSelectedProject() {
   const currentSelectedProject = !selecteds.value.includes(false);

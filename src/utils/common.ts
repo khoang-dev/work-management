@@ -17,3 +17,11 @@ export function convertHmTimeToText(hmTime: HmTime): string {
     .toString()
     .padStart(2, '0')}m`;
 }
+
+export function genId() {
+  let currentId: number = 0;
+  return {
+    set: (value: number) => (currentId = value),
+    get: () => String(++currentId),
+  };
+}

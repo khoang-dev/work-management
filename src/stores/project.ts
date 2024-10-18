@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { genId } from 'src/utils/common';
 import { ProjectId } from 'src/utils/type';
 import { ref } from 'vue';
 
@@ -19,7 +20,15 @@ const MOCK_PROJECTS: ResponseProject[] = [
   },
 ];
 export const useProjectStore = defineStore('project', () => {
-  const projects = ref<ResponseProject[]>(MOCK_PROJECTS);
+  const projects = ref<ResponseProject[]>([]);
+
+  // MOCK DATA
+  const id = genId();
+  function init() {
+    id.set(MOCK_PROJECTS.length);
+    projects.value = MOCK_PROJECTS;
+  }
+  init();
 
   async function create(value: Project) {
     //TODO: Updating this code when there are a backend
@@ -27,7 +36,7 @@ export const useProjectStore = defineStore('project', () => {
       setTimeout(() => {
         resolve({
           ...value,
-          id: projects.value.length.toString(),
+          id: id.get(),
         });
       }, 2000);
     });

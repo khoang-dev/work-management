@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { genId } from 'src/utils/common';
 import { NON_EXISTING_PROJECT } from 'src/utils/constant';
 import { HmTime, StorageProjectId } from 'src/utils/type';
 import { ref } from 'vue';
@@ -44,19 +45,13 @@ export const useTaskStore = defineStore('task', () => {
   const selectedTasksInformation = ref<SelectedTasksInformation>(new Map());
 
   // MOCK DATA
+  const id = genId();
   function init() {
-    genId().set(MOCK_TASKS.length);
+    id.set(MOCK_TASKS.length);
     MOCK_TASKS.forEach((task) => setTask(task));
   }
   init();
 
-  function genId() {
-    let currentId: number = 0;
-    return {
-      set: (value: number) => (currentId = value),
-      get: () => String(currentId++),
-    };
-  }
   function setTask(task: ResponseTask) {
     const projectId = task.projectId || NON_EXISTING_PROJECT.id;
     const dataMap = tasks.value.get(projectId);
@@ -76,7 +71,7 @@ export const useTaskStore = defineStore('task', () => {
           newTasks.map((task) => {
             return {
               ...task,
-              id: genId().get(),
+              id: id.get(),
               usedTime: USED_TIME_DEFALT_VALUE,
               done: false,
             };
@@ -94,7 +89,7 @@ export const useTaskStore = defineStore('task', () => {
       setTimeout(() => {
         resolve({
           ...newTask,
-          id: genId().get(),
+          id: id.get(),
           usedTime: USED_TIME_DEFALT_VALUE,
           done: false,
         });
