@@ -25,3 +25,7 @@ export function genId() {
     get: () => String(++currentId),
   };
 }
+
+export function requiredValidation<T>(val: T) {
+  return val === 0 || !!val || 'Field is required';
+}
