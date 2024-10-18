@@ -100,8 +100,15 @@ export const useTaskStore = defineStore('task', () => {
     return responseTask;
   }
 
-  // function changeSelection(idTaskSelectionMutations: string[]) {
-  //   selectedTaskIds.value = idTaskSelectionMutations;
-  // }
-  return { tasks, selectedTasksInformation, createList, create, getTask };
+  function changeSelection(idTaskSelectionMutations: SelectedTasksInformation) {
+    selectedTasksInformation.value = new Map(idTaskSelectionMutations);
+  }
+  return {
+    tasks,
+    selectedTasksInformation,
+    createList,
+    create,
+    getTask,
+    changeSelection,
+  };
 });

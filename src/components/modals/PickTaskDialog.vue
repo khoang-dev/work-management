@@ -60,7 +60,7 @@ const { tasks } = storeToRefs(taskStore);
 const showDialog = defineModel<boolean>({ required: true, default: false });
 
 const idTaskSelectionMutations = ref<SelectedTasksInformation>(
-  taskStore.selectedTasksInformation
+  new Map(taskStore.selectedTasksInformation)
 );
 
 //TODO:  refactor  logic
@@ -94,7 +94,7 @@ function changeSelection(
 }
 
 function confirm() {
-  // taskStore.changeSelection([...idTaskSelectionMutations.value]);
-  // showDialog.value = false;
+  taskStore.changeSelection(idTaskSelectionMutations.value);
+  showDialog.value = false;
 }
 </script>
