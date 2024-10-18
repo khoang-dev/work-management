@@ -13,5 +13,7 @@ export function minuteToHmTime(minutes: number): HmTime {
 }
 
 export function convertHmTimeToText(hmTime: HmTime): string {
-  return `${hmTime.hours}h ${hmTime.minutes}m`;
+  return `${hmTime.hours.toString().padStart(2, '0')}h ${hmTime.minutes
+    .toString()
+    .padStart(2, '0')}m`;
 }
